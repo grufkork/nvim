@@ -22,7 +22,7 @@ vim.cmd([[
 nnoremap <Leader>b :buffers<CR>:buffer<Space>
 nnoremap <Leader>n :bn<CR>
 nnoremap <Leader>w :wa<CR>
-nnoremap <Leader>W :wq<CR>
+nnoremap <Leader>W :wa<CR>:q<CR>
 nnoremap <Leader>r :!cargo r<CR>
 ]])
 
