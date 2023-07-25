@@ -8,6 +8,7 @@ vim.opt.expandtab = true
 vim.opt.signcolumn = "yes"
 vim.wo.number = true
 vim.wo.relativenumber = true
+vim.wo.wrap = false
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.termguicolors = true
@@ -24,6 +25,8 @@ nnoremap <Leader>n :bn<CR>
 nnoremap <Leader>w :wa<CR>
 nnoremap <Leader>W :wa<CR>:q<CR>
 nnoremap <Leader>r :!cargo r<CR>
+autocmd InsertEnter * set norelativenumber
+autocmd InsertLeave * set relativenumber
 ]])
 
 -- vim.diagnostic.update_in_inser = true
@@ -160,7 +163,7 @@ cmp.setup({
   },
 })
 
---vim.opt.updatetime = 300
+vim.opt.updatetime = 300
 vim.cmd([[
 autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 
