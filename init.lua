@@ -75,20 +75,33 @@ require("lazy").setup({
     opts = {}
   },
   
-  'numToStr/Comment.nvim',
-  'tpope/vim-surround',
+    'numToStr/Comment.nvim',
+    --'tpope/vim-surround',
 
-  'nvim-treesitter/nvim-treesitter',
+    'nvim-treesitter/nvim-treesitter',
 
-  {
-   'nvim-telescope/telescope.nvim', tag = '0.1.2',
-   dependencies = { 'nvim-lua/plenary.nvim' }
-  },
+    {
+        'nvim-telescope/telescope.nvim', tag = '0.1.2',
+        dependencies = { 'nvim-lua/plenary.nvim' }
+    },
 
   'lukas-reineke/indent-blankline.nvim',
 
-  { "ellisonleao/gruvbox.nvim", priority = 1000 },
-    "vimoxide/vim-cinnabar"
+  --{ "ellisonleao/gruvbox.nvim", priority = 1000 },
+  {
+    "ellisonleao/gruvbox.nvim",
+    priority = 1000,
+    config = function()
+      require("gruvbox").setup({
+        contrast = "hard",
+         palette_overrides = {
+          dark0_hard = "#000000",
+        },
+      })
+    end,
+  },
+    "vimoxide/vim-cinnabar",
+    "sainnhe/gruvbox-material"
   -- 'simrat39/inlay-hints.nvim'
 })
 
@@ -105,8 +118,10 @@ require("mason").setup({
 --    }
 })
 require("mason-lspconfig").setup{
-	ensure_installed = {"rust_analyzer"}
+	ensure_installed = {"rust_analyzer", "vtsls", "html"}
 }
+require("lspconfig").vtsls.setup{}
+require("lspconfig").html.setup{}
 
 --Autocomplete
 vim.opt.completeopt = {'menuone', 'noinsert', 'noselect'}
