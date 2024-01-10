@@ -1,6 +1,8 @@
 -- [x]gcc comment lines
 -- s[char] select parenthesis
 
+vim.loader.enable()
+
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
@@ -86,8 +88,7 @@ require("lazy").setup({
         dependencies = { 'nvim-lua/plenary.nvim' }
     },
 
-  'lukas-reineke/indent-blankline.nvim',
-
+    { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
   --{ "ellisonleao/gruvbox.nvim", priority = 1000 },
   {
     "ellisonleao/gruvbox.nvim",
@@ -123,6 +124,7 @@ require("mason-lspconfig").setup{
 }
 require("lspconfig").vtsls.setup{}
 require("lspconfig").html.setup{}
+require("lspconfig").omnisharp.setup{}
 
 --Autocomplete
 vim.opt.completeopt = {'menuone', 'noinsert', 'noselect'}
@@ -245,18 +247,11 @@ vim.opt.termguicolors = true
 vim.cmd [[highlight IndentBlanklineIndent1 guifg=#202020 gui=nocombine]]
 vim.cmd [[highlight IndentBlanklineIndent2 guibg=#101010 gui=nocombine]]
 
-require("indent_blankline").setup {
-    char = "⎸",
-    -- space_char_blankline = " ",
-    char_highlight_list = {
-        "IndentBlanklineIndent1",
-    --     "IndentBlanklineIndent2",
-    },
-    -- space_char_highlight_list = {
-        -- "IndentBlanklineIndent1",
-    --     "IndentBlanklineIndent2",
-    -- },
-    --show_trailing_blankline_indent = false,
+local highlight = {
+    "CursorColumn",
+    "Whitespace",
+}
+require("ibl").setup {
 }
 
 local sign = function(opts)
