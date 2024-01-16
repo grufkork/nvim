@@ -58,14 +58,23 @@ require("lazy").setup({
     'neovim/nvim-lspconfig',
     {'simrat39/rust-tools.nvim', lazy = true},
 
+    'lervag/vimtex',
+
     'hrsh7th/nvim-cmp', --Engine
     'hrsh7th/cmp-path', --Paths
     'hrsh7th/cmp-nvim-lsp', --From LSP
     'hrsh7th/cmp-nvim-lsp-signature-help', --Inlay hints
     'hrsh7th/cmp-nvim-lua',
     'hrsh7th/cmp-buffer', -- From surrounding text,
-    'hrsh7th/cmp-vsnip',
-    'hrsh7th/vim-vsnip',
+    --'hrsh7th/cmp-vsnip',
+    --'hrsh7th/vim-vsnip',
+    'micangl/cmp-vimtex',
+
+    {
+        "L3MON4D3/LuaSnip",
+        dependencies = { "rafamadriz/friendly-snippets", "saadparwaiz1/cmp_luasnip"},
+    },
+
 
     {
         'folke/trouble.nvim',
@@ -112,7 +121,6 @@ require("lazy").setup({
 })
 
 
-
 -- Mason Setup
 require("mason").setup({
     --    ui = {
@@ -135,14 +143,18 @@ vim.opt.completeopt = {'menuone', 'noinsert', 'noselect'}
 
 local cmp = require('cmp')
 
+
 cmp.setup({
     sources = {
+        
+        { name = 'luasnip', option = { use_show_condition = false } },
+        --{name = "luasnip"},
         {name = "path"},
         {name = "nvim_lsp"},
         {name = "nvim_lsp_signature_help"},
         {name = "nvim_lua"},
         --{name = "buffer"},
-        {name = "vsnip"}
+        --{name = "vsnip"}
     },
     mapping = {
         --['<C-p>'] = cmp.mapping.select_prev_item(),
@@ -175,7 +187,8 @@ cmp.setup({
     },
     snippet = {
         expand = function(args)
-            vim.fn["vsnip#anonymous"](args.body)
+            require'luasnip'.lsp_expand(args.body)
+            --vim.fn["vsnip#anonymous"](args.body)
         end,
     },
     window = {
@@ -184,6 +197,13 @@ cmp.setup({
         documentation = cmp.config.window.bordered(),
     },
 })
+--cmp.setup.filetype("tex", {
+--    sources = {
+--        {name = 'vimtex'},
+        --{name = 'buffer'},
+ --       {name = 'luasnip'}
+--    }
+--})
 
 vim.opt.updatetime = 100
 vim.cmd([[
@@ -193,6 +213,7 @@ autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 
 
 require "lsp_signature".setup(cfg)
+
 
 
 local rt = require("rust-tools")
@@ -228,6 +249,7 @@ require('nvim-treesitter.configs').setup {
     highlight = {
         enable = true,
         additional_vim_regex_highlighting=false,
+        disable = {"latex"}
     },
     ident = { enable = true }, 
 }
@@ -275,3 +297,20 @@ sign({name = 'DiagnosticSignHint', text = ''})
 sign({name = 'DiagnosticSignInfo', text = ''})
 
 require("Comment").setup()
+
+
+
+
+vim.opt.conceallevel=2
+require("luasnip.loaders.from_vscode").lazy_load()
+
+local ls = require'luasnip'
+-- vim.keymap.set({"i"}, "<C-K>", function() ls.expand() end, {silent = true})
+vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
+vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
+
+-- vim.keymap.set({"i", "s"}, "<C-E>", function()
+-- 	if ls.choice_active() then
+-- 		ls.change_choice(1)
+-- 	end
+-- end, {silent = true})
