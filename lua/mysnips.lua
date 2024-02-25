@@ -26,7 +26,7 @@ local parse = require("luasnip.util.parser").parse_snippet
 local ms = ls.multi_snippet
 local k = require("luasnip.nodes.key_indexer").new_key
 
-ls.add_snippets("all", {
+ls.add_snippets("tex", {
     s("bgn", 
     {
         t'\\begin{', 
@@ -43,6 +43,15 @@ ls.add_snippets("all", {
     {
         f(function(_, parent) 
             return "\\hat{" .. parent.snippet.env.POSTFIX_MATCH .. "}"
+        end, 
+        {}),
+
+    }),
+    postfix(
+    ".bar",
+    {
+        f(function(_, parent) 
+            return "\\bar{" .. parent.snippet.env.POSTFIX_MATCH .. "}"
         end, 
         {}),
 
@@ -68,6 +77,15 @@ ls.add_snippets("all", {
         t'\\frac{',
         i(1),
         t'}{',
+        i(2),
+        t'}',
+        i(0)
+    }),
+
+    s("part",{
+        t'\\frac{\\partial ',
+        i(1),
+        t'}{\\partial ',
         i(2),
         t'}',
         i(0)
