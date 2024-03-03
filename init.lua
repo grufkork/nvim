@@ -139,7 +139,7 @@ require("mason").setup({
 })
 
 require("mason-lspconfig").setup{
-    ensure_installed = {"rust_analyzer", "vtsls", "html"}
+    -- ensure_installed = {"rust_analyzer", "vtsls", "html"}
 }
 require("lspconfig").vtsls.setup{}
 require("lspconfig").html.setup{}
