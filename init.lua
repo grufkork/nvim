@@ -1,6 +1,16 @@
 -- [x]gcc comment lines
 -- s[char] select parenthesis
 
+vim.cmd([[
+nnoremap <Leader>b :buffers<CR>:buffer<Space>
+nnoremap <Leader>n :bn<CR>
+nnoremap <Leader>w :wa<CR>
+nnoremap <Leader>W :wa<CR>:q<CR>
+nnoremap <Leader>r :!cargo r<CR>
+autocmd InsertEnter * set norelativenumber
+autocmd InsertLeave * set relativenumber
+]])
+
 vim.loader.enable()
 
 vim.opt.tabstop = 4
@@ -22,15 +32,7 @@ vim.diagnostic.config{
     update_in_insert = true
 }
 
-vim.cmd([[
-nnoremap <Leader>b :buffers<CR>:buffer<Space>
-nnoremap <Leader>n :bn<CR>
-nnoremap <Leader>w :wa<CR>
-nnoremap <Leader>W :wa<CR>:q<CR>
-nnoremap <Leader>r :!cargo r<CR>
-autocmd InsertEnter * set norelativenumber
-autocmd InsertLeave * set relativenumber
-]])
+
 
 -- vim.diagnostic.update_in_inser = true
 
@@ -125,6 +127,15 @@ require("lazy").setup({
     "smoka7/hop.nvim"
     -- 'simrat39/inlay-hints.nvim'
 })
+
+-- VSC Plugins
+local hop = require "hop"
+hop.setup()
+vim.keymap.set('n', '<Leader>g', hop.hint_words, {})
+
+if vim.g.vscode then
+    return
+end
 
 
 -- Mason Setup
@@ -307,9 +318,6 @@ sign({name = 'DiagnosticSignHint', text = ''})
 sign({name = 'DiagnosticSignInfo', text = ''})
 
 require("Comment").setup()
-local hop = require "hop"
-hop.setup()
-vim.keymap.set('n', '<Leader>g', hop.hint_words, {})
 
 
 
