@@ -1,15 +1,7 @@
 -- [x]gcc comment lines
 -- s[char] select parenthesis
 
-vim.cmd([[
-nnoremap <Leader>b :buffers<CR>:buffer<Space>
-nnoremap <Leader>n :bn<CR>
-nnoremap <Leader>w :wa<CR>
-nnoremap <Leader>W :wa<CR>:q<CR>
-nnoremap <Leader>r :!cargo r<CR>
-autocmd InsertEnter * set norelativenumber
-autocmd InsertLeave * set relativenumber
-]])
+
 
 vim.loader.enable()
 
@@ -33,6 +25,12 @@ vim.diagnostic.config{
 }
 
 
+local function run()
+    local line = vim.api.nvim_buf_get_lines(0, -2, -1, false)[1]
+    vim.cmd(string.sub(line, 4, -1))
+end
+
+vim.keymap.set('n', '<Leader>r', run, {})
 
 -- vim.diagnostic.update_in_inser = true
 
@@ -91,6 +89,7 @@ require("lazy").setup({
         event = "InsertEnter",
         opts = {}
     },
+    'windwp/nvim-ts-autotag',
 
     {
         'ray-x/lsp_signature.nvim'
@@ -128,6 +127,16 @@ require("lazy").setup({
     -- 'simrat39/inlay-hints.nvim'
 })
 
+vim.cmd([[
+nnoremap <Leader>b :buffers<CR>:buffer<Space>
+nnoremap <Leader>n :bn<CR>
+nnoremap <Leader>w :wa<CR>
+nnoremap <Leader>W :wa<CR>:q<CR>
+nnoremap <Leader>R :!cargo r<CR>
+autocmd InsertEnter * set norelativenumber
+autocmd InsertLeave * set relativenumber
+]])
+
 -- VSC Plugins
 local hop = require "hop"
 hop.setup()
@@ -150,11 +159,10 @@ require("mason").setup({
 })
 
 require("mason-lspconfig").setup{
-    -- ensure_installed = {"rust_analyzer", "vtsls", "html"}
+    ensure_installed = {"rust_analyzer", "tsserver", "html"}
 }
-require("lspconfig").vtsls.setup{}
 require("lspconfig").html.setup{}
-require("lspconfig").omnisharp.setup{}
+require("lspconfig").tsserver.setup{}
 
 
 --Autocomplete
@@ -265,7 +273,7 @@ vim.keymap.set('n', '<Leader>t', trouble.toggle, {})
 --Cosmetic 
 
 require('nvim-treesitter.configs').setup {
-    ensure_installed = { "lua", "rust", "toml" },
+    ensure_installed = { "lua", "rust", "toml", "html", "typescript" },
     auto_install = true,
     highlight = {
         enable = true,
@@ -281,7 +289,12 @@ require("lualine").setup {
     },
     sections = { 
         lualine_a = {'mode'},
-        lualine_b = {'branch', 'diff', 'diagnostics'},
+        lualine_b = {'branch', 'diff', 
+        {
+            'diagnostics',
+            symbols = {error = '', warn = '', info = '', hint = ''}
+
+        }},
         lualine_c = {'filename', {"lsp_progress"}},
         lualine_x = {'encoding', 'fileformat', 'filetype'},
         lualine_y = {'progress'},
@@ -319,6 +332,22 @@ sign({name = 'DiagnosticSignInfo', text = ''})
 
 require("Comment").setup()
 
+require('nvim-ts-autotag').setup({
+  opts = {
+    -- Defaults
+    enable_close = true, -- Auto close tags
+    enable_rename = true, -- Auto rename pairs of tags
+    enable_close_on_slash = false -- Auto close on trailing </
+  },
+  -- Also override individual filetype configs, these take priority.
+  -- Empty by default, useful if one of the "opts" global settings
+  -- doesn't work well in a specific filetype
+  -- per_filetype = {
+  --   ["html"] = {
+  --     enable_close = false
+  --   }
+  -- }
+})
 
 
 vim.opt.conceallevel=2
