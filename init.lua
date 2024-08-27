@@ -56,7 +56,11 @@ require("lazy").setup({
     'williamboman/mason.nvim',
     'williamboman/mason-lspconfig.nvim',
     'neovim/nvim-lspconfig',
-    {'simrat39/rust-tools.nvim', lazy = true},
+    {
+        'mrcjkb/rustaceanvim',
+        version = '^5', -- Recommended
+        lazy = false, -- This plugin is already lazy
+    },
 
     'lervag/vimtex',
 
@@ -78,10 +82,21 @@ require("lazy").setup({
         },
     },
 
-
     {
-        'folke/trouble.nvim',
-        dependencies = 'nvim-tree/nvim-web-devicons'
+        "folke/trouble.nvim",
+        opts = {
+            warn_no_results = false,
+            open_no_results = true,
+            focus = true
+        }, -- for default options, refer to the configuration section for custom setup.
+        cmd = "Trouble",
+        keys = {
+            {
+                "<leader>t",
+                "<cmd>Trouble diagnostics toggle<cr>",
+                desc = "Diagnostics (Trouble)",
+            },
+        },
     },
 
     {
@@ -120,10 +135,16 @@ require("lazy").setup({
             })
         end,
     },
+    -- "yorickpeterse/happy_hacking.vim",
     "vimoxide/vim-cinnabar",
     "sainnhe/gruvbox-material",
     "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-    "smoka7/hop.nvim"
+    "smoka7/hop.nvim",
+    {
+        "grufkork/ShaderHighlight",
+        -- ft = {"glsl", "hlsl", "sdsl"}
+    },
+    "github/copilot.vim"
     -- 'simrat39/inlay-hints.nvim'
 })
 
@@ -159,7 +180,7 @@ require("mason").setup({
 })
 
 require("mason-lspconfig").setup{
-    ensure_installed = {"rust_analyzer", "tsserver", "html"}
+    ensure_installed = {"tsserver", "html"}
 }
 require("lspconfig").html.setup{}
 require("lspconfig").tsserver.setup{}
@@ -244,18 +265,16 @@ require "lsp_signature".setup(cfg)
 
 
 
-local rt = require("rust-tools")
-
-rt.setup({
-    server = {
-        on_attach = function(_, bufnr)
-            -- Hover actions
-            vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
-            -- Code action groups
-            vim.keymap.set("n", "<Leader>aa", rt.code_action_group.code_action_group, { buffer = bufnr })
-        end,
-    },
-})
+--rt.setup({
+--    server = {
+--        on_attach = function(_, bufnr)
+--            -- Hover actions
+--            vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+--            -- Code action groups
+--            vim.keymap.set("n", "<Leader>aa", rt.code_action_group.code_action_group, { buffer = bufnr })
+--        end,
+--    },
+--})
 
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
@@ -266,8 +285,8 @@ vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
 vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
 vim.keymap.set('n', '<Leader>ar', vim.lsp.buf.rename, {})
 
-local trouble = require("trouble")
-vim.keymap.set('n', '<Leader>t', trouble.toggle, {})
+-- local trouble = require("trouble")
+-- vim.keymap.set('n', '<Leader>t', trouble.toggle, {})
 --vim.keymap.set('n', 'gr', trouble.toggle("lsp_references"), {})
 
 --Cosmetic 
@@ -305,6 +324,7 @@ require("lualine").setup {
 
 vim.o.background = "dark" -- or "light" for light mode
 vim.cmd([[colorscheme gruvbox]])
+-- vim.cmd([[colorscheme happy_hacking]])
 
 vim.opt.termguicolors = true
 vim.cmd [[highlight IndentBlanklineIndent1 guifg=#202020 gui=nocombine]]
@@ -333,37 +353,37 @@ sign({name = 'DiagnosticSignInfo', text = ''})
 require("Comment").setup()
 
 require('nvim-ts-autotag').setup({
-  opts = {
-    -- Defaults
-    enable_close = true, -- Auto close tags
-    enable_rename = true, -- Auto rename pairs of tags
-    enable_close_on_slash = false -- Auto close on trailing </
-  },
-  -- Also override individual filetype configs, these take priority.
-  -- Empty by default, useful if one of the "opts" global settings
-  -- doesn't work well in a specific filetype
-  -- per_filetype = {
-  --   ["html"] = {
-  --     enable_close = false
-  --   }
-  -- }
-})
+    opts = {
+        -- Defaults
+        enable_close = true, -- Auto close tags
+        enable_rename = true, -- Auto rename pairs of tags
+        enable_close_on_slash = false -- Auto close on trailing </
+    },
+    -- Also override individual filetype configs, these take priority.
+    -- Empty by default, useful if one of the "opts" global settings
+    -- doesn't work well in a specific filetype
+    -- per_filetype = {
+        --   ["html"] = {
+            --     enable_close = false
+            --   }
+            -- }
+        })
 
 
-vim.opt.conceallevel=2
---require("luasnip.loaders.from_vscode").lazy_load()
+        vim.opt.conceallevel=2
+        --require("luasnip.loaders.from_vscode").lazy_load()
 
-local ls = require'luasnip'
--- vim.keymap.set({"i"}, "<C-K>", function() ls.expand() end, {silent = true})
-vim.keymap.set({"i", "s"}, "<C-K>", function() ls.jump( 1) end, {silent = true})
-vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
+        local ls = require'luasnip'
+        -- vim.keymap.set({"i"}, "<C-K>", function() ls.expand() end, {silent = true})
+        vim.keymap.set({"i", "s"}, "<C-K>", function() ls.jump( 1) end, {silent = true})
+        vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
 
-vim.keymap.set("", "<Leader>l", require("lsp_lines").toggle)
+        vim.keymap.set("", "<Leader>l", require("lsp_lines").toggle)
 
--- vim.keymap.set({"i", "s"}, "<C-E>", function()
-    -- 	if ls.choice_active() then
-    -- 		ls.change_choice(1)
-    -- 	end
-    -- end, {silent = true})
+        -- vim.keymap.set({"i", "s"}, "<C-E>", function()
+            -- 	if ls.choice_active() then
+            -- 		ls.change_choice(1)
+            -- 	end
+            -- end, {silent = true})
 
-    require("mysnips")
+            require("mysnips")
