@@ -56,11 +56,7 @@ require("lazy").setup({
     'williamboman/mason.nvim',
     'williamboman/mason-lspconfig.nvim',
     'neovim/nvim-lspconfig',
-    {
-        'mrcjkb/rustaceanvim',
-        version = '^5', -- Recommended
-        lazy = false, -- This plugin is already lazy
-    },
+    
 
     'lervag/vimtex',
 
@@ -80,6 +76,12 @@ require("lazy").setup({
             -- "rafamadriz/friendly-snippets", 
             "saadparwaiz1/cmp_luasnip"
         },
+    },
+
+    {
+        'mrcjkb/rustaceanvim',
+        version = '^5',
+        lazy = false, -- This plugin is already lazy
     },
 
     {
@@ -164,6 +166,7 @@ hop.setup()
 vim.keymap.set('n', '<Leader>g', hop.hint_words, {})
 
 if vim.g.vscode then
+    vim.cmd("Copilot disable")
     return
 end
 
@@ -180,10 +183,9 @@ require("mason").setup({
 })
 
 require("mason-lspconfig").setup{
-    ensure_installed = {"tsserver", "html"}
+    ensure_installed = {"html"}
 }
 require("lspconfig").html.setup{}
-require("lspconfig").tsserver.setup{}
 
 
 --Autocomplete
