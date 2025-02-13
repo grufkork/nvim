@@ -56,7 +56,7 @@ require("lazy").setup({
     'williamboman/mason.nvim',
     'williamboman/mason-lspconfig.nvim',
     'neovim/nvim-lspconfig',
-    
+
 
     'lervag/vimtex',
 
@@ -123,7 +123,6 @@ require("lazy").setup({
     },
 
     { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
-    --{ "ellisonleao/gruvbox.nvim", priority = 1000 },
     {
         "ellisonleao/gruvbox.nvim",
         priority = 1000,
@@ -146,7 +145,9 @@ require("lazy").setup({
         "grufkork/ShaderHighlight",
         -- ft = {"glsl", "hlsl", "sdsl"}
     },
-    "github/copilot.vim"
+    "github/copilot.vim",
+    "sphamba/smear-cursor.nvim",
+    "stevearc/oil.nvim"
     -- 'simrat39/inlay-hints.nvim'
 })
 
@@ -264,19 +265,8 @@ autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 
 require "lsp_lines".setup()
 require "lsp_signature".setup(cfg)
+require "oil".setup()
 
-
-
---rt.setup({
---    server = {
---        on_attach = function(_, bufnr)
---            -- Hover actions
---            vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
---            -- Code action groups
---            vim.keymap.set("n", "<Leader>aa", rt.code_action_group.code_action_group, { buffer = bufnr })
---        end,
---    },
---})
 
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
@@ -286,10 +276,10 @@ vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
 
 vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
 vim.keymap.set('n', '<Leader>ar', vim.lsp.buf.rename, {})
+vim.keymap.set('n', '<Leader>aa', vim.lsp.buf.code_action, {})
+vim.keymap.set('n', '<Leader>as', vim.lsp.buf.signature_help, {})
+vim.keymap.set('n', '<Leader>af', vim.lsp.buf.references, {})
 
--- local trouble = require("trouble")
--- vim.keymap.set('n', '<Leader>t', trouble.toggle, {})
---vim.keymap.set('n', 'gr', trouble.toggle("lsp_references"), {})
 
 --Cosmetic 
 
@@ -336,8 +326,7 @@ local highlight = {
     "CursorColumn",
     "Whitespace",
 }
-require("ibl").setup {
-}
+require("ibl").setup {}
 
 local sign = function(opts)
     vim.fn.sign_define(opts.name, {
@@ -361,31 +350,15 @@ require('nvim-ts-autotag').setup({
         enable_rename = true, -- Auto rename pairs of tags
         enable_close_on_slash = false -- Auto close on trailing </
     },
-    -- Also override individual filetype configs, these take priority.
-    -- Empty by default, useful if one of the "opts" global settings
-    -- doesn't work well in a specific filetype
-    -- per_filetype = {
-        --   ["html"] = {
-            --     enable_close = false
-            --   }
-            -- }
-        })
+})
 
 
-        vim.opt.conceallevel=2
-        --require("luasnip.loaders.from_vscode").lazy_load()
+vim.opt.conceallevel=2
 
-        local ls = require'luasnip'
-        -- vim.keymap.set({"i"}, "<C-K>", function() ls.expand() end, {silent = true})
-        vim.keymap.set({"i", "s"}, "<C-K>", function() ls.jump( 1) end, {silent = true})
-        vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
+local ls = require'luasnip'
+vim.keymap.set({"i", "s"}, "<C-K>", function() ls.jump( 1) end, {silent = true})
+vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
 
-        vim.keymap.set("", "<Leader>l", require("lsp_lines").toggle)
+vim.keymap.set("", "<Leader>l", require("lsp_lines").toggle)
 
-        -- vim.keymap.set({"i", "s"}, "<C-E>", function()
-            -- 	if ls.choice_active() then
-            -- 		ls.change_choice(1)
-            -- 	end
-            -- end, {silent = true})
-
-            require("mysnips")
+require("mysnips")
