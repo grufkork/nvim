@@ -146,7 +146,10 @@ require("lazy").setup({
         -- ft = {"glsl", "hlsl", "sdsl"}
     },
     "github/copilot.vim",
-    "sphamba/smear-cursor.nvim",
+    {
+        "sphamba/smear-cursor.nvim",
+        opts = {}
+    },
     "stevearc/oil.nvim"
     -- 'simrat39/inlay-hints.nvim'
 })
