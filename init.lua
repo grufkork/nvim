@@ -18,6 +18,10 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.termguicolors = true
 
+vim.opt.shell = "powershell.exe"
+vim.opt.shellcmdflag = '-nologo -noprofile -ExecutionPolicy RemoteSigned -command'
+vim.opt.shellxquote = ''
+
 vim.g.mapleader = " "
 
 vim.diagnostic.config{
@@ -82,6 +86,10 @@ require("lazy").setup({
         'mrcjkb/rustaceanvim',
         version = '^5',
         lazy = false, -- This plugin is already lazy
+    },
+
+    {
+        "mfussenegger/nvim-dap",
     },
 
     {
@@ -150,7 +158,13 @@ require("lazy").setup({
         "sphamba/smear-cursor.nvim",
         opts = {}
     },
-    "stevearc/oil.nvim"
+    "stevearc/oil.nvim",
+    {
+        "chomosuke/typst-preview.nvim",
+        ft = "typst",
+        version = "1.*",
+        otps={}
+    }
     -- 'simrat39/inlay-hints.nvim'
 })
 
@@ -190,6 +204,13 @@ require("mason-lspconfig").setup{
     ensure_installed = {"html"}
 }
 require("lspconfig").html.setup{}
+
+require("lspconfig")["tinymist"].setup{
+    settings = {
+        formatterMode = "typstyle",
+
+    }
+}
 
 
 --Autocomplete
@@ -269,6 +290,7 @@ autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 require "lsp_lines".setup()
 require "lsp_signature".setup(cfg)
 require "oil".setup()
+require "typst-preview".setup()
 
 
 local builtin = require('telescope.builtin')
@@ -287,7 +309,7 @@ vim.keymap.set('n', '<Leader>af', vim.lsp.buf.references, {})
 --Cosmetic 
 
 require('nvim-treesitter.configs').setup {
-    ensure_installed = { "lua", "rust", "toml", "html", "typescript" },
+    -- ensure_installed = { "lua", "rust", "toml", "html", "typescript" },
     auto_install = true,
     highlight = {
         enable = true,
