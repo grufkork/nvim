@@ -1,8 +1,6 @@
 -- [x]gcc comment lines
 -- s[char] select parenthesis
 
-
-
 vim.loader.enable()
 
 vim.opt.tabstop = 4
@@ -18,8 +16,9 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.termguicolors = true
 
-vim.opt.shell = "powershell.exe"
-vim.opt.shellcmdflag = '-nologo -noprofile -ExecutionPolicy RemoteSigned -command'
+-- vim.opt.shell = "powershell.exe"
+-- vim.opt.shellcmdflag = '-nologo -noprofile -ExecutionPolicy RemoteSigned -command'
+-- vim.opt.shell = "sh"
 vim.opt.shellxquote = ''
 
 vim.g.mapleader = " "
@@ -27,6 +26,7 @@ vim.g.mapleader = " "
 vim.diagnostic.config{
     update_in_insert = true
 }
+
 
 
 local function run()
@@ -84,7 +84,7 @@ require("lazy").setup({
 
     {
         'mrcjkb/rustaceanvim',
-        version = '^5',
+        version = '^6',
         lazy = false, -- This plugin is already lazy
     },
 
@@ -153,7 +153,15 @@ require("lazy").setup({
         "grufkork/ShaderHighlight",
         -- ft = {"glsl", "hlsl", "sdsl"}
     },
-    "github/copilot.vim",
+    -- "github/copilot.vim",
+    {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        config = function()
+            require("copilot").setup({suggestion = { auto_trigger = false, keymap = { next = "<Tab>", prev = "<S-Tab>" } } })
+        end
+    },
     {
         "sphamba/smear-cursor.nvim",
         opts = {}
@@ -201,16 +209,19 @@ require("mason").setup({
 })
 
 require("mason-lspconfig").setup{
-    ensure_installed = {"html"}
+    ensure_installed = {"html", "tinymist", "ruff", "ty"}
 }
-require("lspconfig").html.setup{}
 
-require("lspconfig")["tinymist"].setup{
-    settings = {
-        formatterMode = "typstyle",
+vim.lsp.enable({"html", "tinymist"})
 
-    }
-}
+-- require("lspconfig").html.setup{}
+--
+-- require("lspconfig")["tinymist"].setup{
+--     settings = {
+--         formatterMode = "typstyle",
+--
+--     }
+-- }
 
 
 --Autocomplete
@@ -286,6 +297,7 @@ vim.cmd([[
 autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 
 ]])
+
 
 require "lsp_lines".setup()
 require "lsp_signature".setup(cfg)
@@ -387,3 +399,5 @@ vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
 vim.keymap.set("", "<Leader>l", require("lsp_lines").toggle)
 
 require("mysnips")
+
+require("incantation")
