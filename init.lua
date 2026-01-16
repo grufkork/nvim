@@ -159,7 +159,9 @@ require("lazy").setup({
         cmd = "Copilot",
         event = "InsertEnter",
         config = function()
-            require("copilot").setup({suggestion = { auto_trigger = false, keymap = { next = "<Tab>", prev = "<S-Tab>" } } })
+            require("copilot").setup({suggestion = { auto_trigger = false
+            --, keymap = { next = "<Tab>", prev = "<S-Tab>" } 
+            } })
         end
     },
     {
