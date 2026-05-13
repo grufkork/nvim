@@ -24,7 +24,7 @@ vim.opt.shellxquote = ''
 vim.g.mapleader = " "
 
 vim.diagnostic.config{
-    update_in_insert = true
+    update_in_insert = false
 }
 
 
@@ -34,7 +34,13 @@ local function run()
     vim.cmd(string.sub(line, 4, -1))
 end
 
+local function edit_dir()
+    local dir = vim.fn.expand("%:h")
+    vim.cmd("edit " .. dir)
+end
+
 vim.keymap.set('n', '<Leader>r', run, {})
+vim.keymap.set('n', '<Leader>e', edit_dir, {})
 
 -- vim.diagnostic.update_in_inser = true
 
@@ -62,7 +68,7 @@ require("lazy").setup({
     'neovim/nvim-lspconfig',
 
 
-    'lervag/vimtex',
+    -- 'lervag/vimtex',
 
     'hrsh7th/nvim-cmp', --Engine
     'hrsh7th/cmp-path', --Paths
@@ -72,7 +78,7 @@ require("lazy").setup({
     'hrsh7th/cmp-buffer', -- From surrounding text,
     --'hrsh7th/cmp-vsnip',
     --'hrsh7th/vim-vsnip',
-    'micangl/cmp-vimtex',
+    -- 'micangl/cmp-vimtex',
 
     {
         "L3MON4D3/LuaSnip",
@@ -84,7 +90,7 @@ require("lazy").setup({
 
     {
         'mrcjkb/rustaceanvim',
-        version = '^6',
+        -- version = '^6',
         lazy = false, -- This plugin is already lazy
     },
 
@@ -164,6 +170,7 @@ require("lazy").setup({
             } })
         end
     },
+    "folke/sidekick.nvim",
     {
         "sphamba/smear-cursor.nvim",
         opts = {}
@@ -174,7 +181,15 @@ require("lazy").setup({
         ft = "typst",
         version = "1.*",
         otps={}
-    }
+    },
+    {
+        "hat0uma/csvview.nvim",
+        opts = {
+            parser = { comments = { "#", "//" } },
+        },
+        cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle" },
+    },
+    { 'glacambre/firenvim', build = ":call firenvim#install(0)" },
     -- 'simrat39/inlay-hints.nvim'
 })
 
@@ -209,6 +224,23 @@ require("mason").setup({
         },
     }
 })
+
+-- local lspconfig = require("lspconfig")
+--
+-- vim.lsp.config('clangd', {
+--     cmd = {
+--         "clangd",
+--         "--background-index",
+--         "--clang-tidy",
+--         "--header-insertion=iwyu",
+--         "--completion-style=detailed",
+--         "--function-arg-placeholders",
+--         "-j4",
+--         "--fallback-style=llvm",
+--     },
+--     -- root_dir = "compile_commands.json"
+--     root_dir = lspconfig.util.root_pattern("compile_commands.json", ".git", "setup.sh"),
+-- })
 
 require("mason-lspconfig").setup{
     ensure_installed = {"html", "tinymist", "ruff", "ty"}
@@ -294,7 +326,7 @@ cmp.setup.filetype("tex", {
     }
 })
 
-vim.opt.updatetime = 100
+vim.opt.updatetime = 500
 vim.cmd([[
 autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 
@@ -403,3 +435,7 @@ vim.keymap.set("", "<Leader>l", require("lsp_lines").toggle)
 require("mysnips")
 
 require("incantation")
+
+if vim.g.started_by_firenvim == true then
+    vim.cmd [[set guifont=Comic_Mono:h8]]
+end
